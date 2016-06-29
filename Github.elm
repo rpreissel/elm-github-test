@@ -1,7 +1,7 @@
 module Github exposing (..)
 
 import Html exposing (Html,ul,li,text,div,form,label,button,input)
-import Html.Attributes exposing (value,for,id,type')
+import Html.Attributes exposing (value,for,id,type',class)
 import Html.Events exposing (onClick, onInput)
 import Html.App as Html
 import Http
@@ -10,7 +10,7 @@ import Task
 
 main =
     Html.program
-        { init = init("rpreissel")
+        { init = init "rpreissel"
         , view = view
         , update = update
         , subscriptions = subscriptions
@@ -33,14 +33,25 @@ init name =
 
 view : Model -> Html Msg
 view model =
-  div [] [
-    div [] [
-      label [ for "username-field" ] [ text "username: " ],
-      input [ id "username-field", type' "text", value model.user, onInput UserNameChanged] [],
-      button [onClick FetchRepos] [ text "Fetch Repos" ]
+  div [class "container"] [
+    div [class "row"] [
+      div [class "form-horizontal col-md-4"] [
+        div [class "form-group"] [
+          label [ for "username-field" ] [ text "Username" ],
+          input [ class "form-control", id "username-field", type' "text", value model.user, onInput UserNameChanged] []
+        ],
+        div [class "form-group"] [
+          button [ class "btn btn-primary", onClick FetchRepos] [ text "Fetch Repos" ]
+        ]
+      ]
     ],
-    ul []
-      (List.map (\r -> li [] [ text r ]) model.repos)
+    div [class "row"] [
+      text "Repos"
+    ],
+    div [class "row"] [
+      ul []
+        (List.map (\r -> li [] [ text r ]) model.repos)
+    ]
   ]
 
 

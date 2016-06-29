@@ -1,0 +1,5 @@
+{
+    "commands": [
+        "*.elm : elm make Github.elm --output resources/public/js/compiled/github.js"
+    ]
+}

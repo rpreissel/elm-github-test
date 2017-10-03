@@ -1,11 +1,10 @@
 module Github exposing (..)
 
 import Html exposing (Html,ul,li,text,div,form,label,button,input)
-import Html.Attributes exposing (value,for,id,type',class)
+import Html.Attributes exposing (value,for,id,type_,class)
 import Html.Events exposing (onClick, onInput)
-import Html.App as Html
 import Http
-import Json.Decode as Json exposing ((:=))
+import Json.Decode as JD exposing (..)
 import Task
 
 main =
@@ -22,10 +21,9 @@ type alias Model =
     }
 
 type Msg
-  = FetchReposSucceed (List String)
+  = ReposFetched (Result Http.Error (List String))
   | FetchRepos
   | UserNameChanged String
-  | FetchFail Http.Error
 
 init : String -> (Model, Cmd Msg)
 init name =
@@ -38,7 +36,7 @@ view model =
       div [class "form-horizontal col-md-4"] [
         div [class "form-group"] [
           label [ for "username-field" ] [ text "Username" ],
-          input [ class "form-control", id "username-field", type' "text", value model.user, onInput UserNameChanged] []
+          input [ class "form-control", id "username-field", type_ "text", Html.Attributes.value model.user, onInput UserNameChanged] []
         ],
         div [class "form-group"] [
           button [ class "btn btn-primary", onClick FetchRepos] [ text "Fetch Repos" ]
@@ -58,12 +56,10 @@ view model =
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    FetchReposSucceed repos
-      -> Debug.log(toString repos)
-         ({model | repos = repos}, Cmd.none)
-    FetchFail error
-      -> Debug.log(toString error)
-         ({model | repos = []}, Cmd.none)
+    ReposFetched (Result.Ok rrepos)
+      -> ({model | repos = rrepos}, Cmd.none)
+    ReposFetched (Result.Err _)
+      ->  ({model | repos = [ "xxx"]}, Cmd.none)
     UserNameChanged user
       -> Debug.log(user)
          ({model | user = user}, Cmd.none)
@@ -81,8 +77,9 @@ fetchReposFromUser user =
     url =
       "https://api.github.com/users/" ++ user ++ "/repos"
   in
-    Task.perform FetchFail FetchReposSucceed (Http.get decodeRepos url)
+    Http.send ReposFetched <|
+      (Http.get url decodeRepos )
 
-decodeRepos : Json.Decoder (List String)
+decodeRepos : JD.Decoder (List String)
 decodeRepos =
-  Json.list ("name" := Json.string)
+  JD.list (JD.field "name" JD.string)

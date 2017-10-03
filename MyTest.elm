@@ -1,6 +1,7 @@
-import String
 
-import ElmTest exposing (..)
+import Test exposing (..)
+import Test.Runner exposing (..)
+import Expect exposing (..)
 
 
 tests : Test

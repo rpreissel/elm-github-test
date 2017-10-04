@@ -6,6 +6,7 @@ import Html.Events exposing (onClick, onInput)
 import Http
 import Json.Decode as JD exposing (..)
 import Task
+import GithubApiToken exposing (apiToken)
 
 main =
     Html.program

@@ -37,7 +37,9 @@ view model =
       div [class "form-horizontal col-md-4"] [
         div [class "form-group"] [
           label [ for "username-field" ] [ text "Username" ],
-          input [ class "form-control", id "username-field", type_ "text", Html.Attributes.value model.user, onInput UserNameChanged] []
+          input [ class "form-control", id "username-field", type_ "text", Html.Attributes.value model.user, onInput UserNameChanged] [],
+          label [ for "git-hub-api-token" ] [ text "Github API Token" ],
+          input [ class "form-control", id "git-hub-api-token", type_ "password", Html.Attributes.value apiToken] []
         ],
         div [class "form-group"] [
           button [ class "btn btn-primary", onClick FetchRepos] [ text "Fetch Repos" ]

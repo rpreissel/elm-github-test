@@ -37,3 +37,6 @@ elm-stuff/
 repl-temp-*
 
 compiled/
+
+### Project Stuff ###
+GithubApiToken.elm
